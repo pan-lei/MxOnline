@@ -19,9 +19,14 @@ class UserAsk(models.Model):
         verbose_name = u"用户咨询"
         verbose_name_plural = verbose_name
 
+    def __unicode__(self):
+        return self.name
+
 
 class CourseComments(models.Model):
-    "课程评论"
+    '''
+    课程评论
+    '''
     user = models.ForeignKey(UserProfile, verbose_name=u"用户")
     course = models.ForeignKey(Course, verbose_name=u"课程")
     comments = models.CharField(max_length=200, verbose_name=u"评论")
@@ -31,6 +36,9 @@ class CourseComments(models.Model):
         verbose_name = u"课程评论"
         verbose_name_plural = verbose_name
 
+    def __unicode__(self):
+        return self.course.name
+
 
 # 用户收藏功能表
 class UserFavorite(models.Model):
@@ -38,7 +46,7 @@ class UserFavorite(models.Model):
     # 用户收藏分为收藏的课程，收藏的机构，收藏的教师
     # 分为两个字段来保存，一个是收藏的类型type，一个是该类型下的id
     fav_id = models.IntegerField(default=0, verbose_name=u"数据id")
-    fav_type = models.IntegerField(choices=((1, u"课程"), (2, u"机构"), (3, u"讲师")), default=1,
+    fav_type = models.IntegerField(choices=((1, u"课程"), (2, u"机构"), (3, u"教师")), default=1,
                                    verbose_name=u"收藏类型")
     add_time = models.DateTimeField(default=datetime.now, verbose_name=u"添加时间")
 

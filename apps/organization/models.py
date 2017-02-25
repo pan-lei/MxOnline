@@ -15,21 +15,35 @@ class CityDict(models.Model):
         verbose_name = u"城市"
         verbose_name_plural = verbose_name
 
+    def __unicode__(self):
+        return self.name
+
 
 # 课程机构表
 class CourseOrg(models.Model):
     name = models.CharField(max_length=50, verbose_name=u"机构名称")
     desc = models.TextField(verbose_name=u"机构描述")
+    category = models.CharField(default="pxjg", verbose_name="机构类别", max_length=20, choices=(("pxjg", u"培训机构"), ("gr", u"个人"), ("gx", u"高校")))
     click_nums = models.IntegerField(default=0, verbose_name=u"点击数")
     fav_nums = models.IntegerField(default=0, verbose_name=u"收藏数")
-    image = models.ImageField(upload_to="org/%Y/%m", verbose_name=u"封面图")
+    tag = models.CharField(max_length=10, verbose_name=u"机构标签", default=u"全国知名")
+    image = models.ImageField(upload_to="org/%Y/%m", verbose_name=u"logo")
     address = models.CharField(max_length=150, verbose_name=u"机构地址")
     city = models.ForeignKey(CityDict, verbose_name=u"所在城市")
+    students = models.IntegerField(default=0, verbose_name=u"学习人数")
+    course_nums = models.IntegerField(default=0, verbose_name=u"课程数")
     add_time = models.DateTimeField(default=datetime.now, verbose_name=u"添加时间")
 
     class Meta:
         verbose_name = u"课程机构"
         verbose_name_plural = verbose_name
+
+    # 获取课程机构的教师数
+    def get_teacher_nums(self):
+        return self.teacher_set.all().count()
+
+    def __unicode__(self):
+        return self.name
 
 
 class Teacher(models.Model):
@@ -42,8 +56,21 @@ class Teacher(models.Model):
     points = models.CharField(max_length=50, verbose_name=u"教学特点")
     click_nums = models.IntegerField(default=0, verbose_name=u"点击数")
     fav_nums = models.IntegerField(default=0, verbose_name=u"收藏数")
+    image = models.ImageField(upload_to="teacher/%Y/%m", verbose_name=u"头像", default='')
+    age = models.IntegerField(default=0, verbose_name=u"年龄")
     add_time = models.DateTimeField(default=datetime.now, verbose_name=u"添加时间")
 
     class Meta:
         verbose_name = u"教师"
         verbose_name_plural = verbose_name
+
+    # 获取教师所教授的课程
+    def get_course(self):
+        return self.course_set.all()
+
+    # 获取教师所教授的课程数
+    def get_course_nums(self):
+        return self.course_set.all().count()
+
+    def __unicode__(self):
+        return self.name
